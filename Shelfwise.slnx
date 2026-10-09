@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Shelfwise.Domain/Shelfwise.Domain.csproj" />
+    <Project Path="src/Shelfwise.Infrastructure/Shelfwise.Infrastructure.csproj" />
+    <Project Path="src/Shelfwise.Api/Shelfwise.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Shelfwise.Tests/Shelfwise.Tests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,31 @@
+@host = http://localhost:5080
+
+### Health
+GET {{host}}/health
+
+### List books
+GET {{host}}/books
+
+### Create a book
+POST {{host}}/books
+Content-Type: application/json
+
+{
+  "isbn": "9780596007126",
+  "title": "Head First Design Patterns",
+  "author": "Eric Freeman, Elisabeth Robson",
+  "genre": "Programming",
+  "price": 44.00,
+  "stockQuantity": 8
+}
+
+### Place an order (replace the bookId with one from GET /books)
+POST {{host}}/orders
+Content-Type: application/json
+
+{
+  "customerEmail": "reader@example.com",
+  "lines": [
+    { "bookId": "00000000-0000-0000-0000-000000000000", "quantity": 2 }
+  ]
+}
