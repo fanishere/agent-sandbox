@@ -11,3 +11,6 @@ coverage/
 *.db-wal
 .worktrees/
 __pycache__/
+
+# Hermes agent artifacts
+.hermes*
