@@ -19,6 +19,13 @@ public class PricingServiceTests
     }
 
     [Fact]
+    public void PriceLine_ExactlyAtBulkThreshold_AppliesTenPercentDiscount()
+    {
+        // "10% off when you buy 10 or more copies": quantity 10 must be discounted.
+        Assert.Equal(90.00m, _pricing.PriceLine(10.00m, 10));
+    }
+
+    [Fact]
     public void PriceLine_WellAboveBulkThreshold_AppliesTenPercentDiscount()
     {
         Assert.Equal(99.00m, _pricing.PriceLine(10.00m, 11));
