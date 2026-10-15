@@ -1,3 +1,4 @@
+using Shelfwise.Domain.Errors;
 using Shelfwise.Domain.Models;
 using Shelfwise.Domain.Repositories;
 
@@ -12,7 +13,11 @@ public sealed class CatalogService
         _books = books;
     }
 
-    public Task<Book?> GetAsync(Guid id) => _books.GetAsync(id);
+    public async Task<Book> GetAsync(Guid id)
+    {
+        return await _books.GetAsync(id)
+            ?? throw new NotFoundException($"Book {id} was not found.");
+    }
 
     public Task<IReadOnlyList<Book>> ListAsync() => _books.ListAsync();
 

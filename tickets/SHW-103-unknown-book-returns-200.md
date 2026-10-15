@@ -4,7 +4,7 @@ title: GET /books/{id} returns 200 for books that don't exist
 type: bug
 priority: medium
 size: XS
-status: todo
+status: in_progress
 labels: [api, catalog]
 depends_on: []
 conflicts_with: [SHW-302, SHW-202]
