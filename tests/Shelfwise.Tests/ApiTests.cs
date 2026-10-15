@@ -45,6 +45,26 @@ public class ApiTests : IClassFixture<ShelfwiseFactory>
     }
 
     [Fact]
+    public async Task GetBook_Unknown_Returns404Problem()
+    {
+        var response = await _client.GetAsync($"/books/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("application/problem+json",
+            response.Content.Headers.ContentType?.MediaType);
+    }
+
+    [Fact]
+    public async Task GetBook_Existing_Returns200()
+    {
+        var bookId = await CreateBookAsync("Existing", price: 12.00m, stock: 1);
+
+        var response = await _client.GetAsync($"/books/{bookId}");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task PlaceOrder_ThenGetById_ReturnsPendingOrder()
     {
         var bookId = await CreateBookAsync("Orderable", price: 10.00m, stock: 10);
