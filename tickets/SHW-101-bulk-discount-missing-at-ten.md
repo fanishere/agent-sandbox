@@ -4,7 +4,7 @@ title: Customers buying exactly 10 copies don't get the bulk discount
 type: bug
 priority: high
 size: XS
-status: todo
+status: in_review
 labels: [pricing, domain]
 depends_on: []
 conflicts_with: [SHW-102, SHW-204]
