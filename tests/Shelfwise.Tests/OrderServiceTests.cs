@@ -81,4 +81,50 @@ public class OrderServiceTests
 
         Assert.Equal(OrderStatus.Cancelled, cancelled.Status);
     }
+
+    [Fact]
+    public async Task Cancel_SingleLine_ReturnsStock()
+    {
+        var book = await _app.AddBookAsync(stock: 5);
+        var order = await _app.OrderService.PlaceOrderAsync(new PlaceOrderRequest(
+            "reader@example.com",
+            new List<OrderLineRequest> { new(book.Id, 2) }));
+
+        await _app.OrderService.CancelAsync(order.Id);
+
+        Assert.Equal(5, (await _app.Books.GetAsync(book.Id))!.StockQuantity);
+    }
+
+    [Fact]
+    public async Task Cancel_MultiLine_ReturnsStockForEveryLine()
+    {
+        var bookA = await _app.AddBookAsync(stock: 5, title: "A");
+        var bookB = await _app.AddBookAsync(stock: 5, title: "B");
+        var order = await _app.OrderService.PlaceOrderAsync(new PlaceOrderRequest(
+            "reader@example.com",
+            new List<OrderLineRequest>
+            {
+                new(bookA.Id, 2),
+                new(bookB.Id, 3),
+            }));
+
+        await _app.OrderService.CancelAsync(order.Id);
+
+        Assert.Equal(5, (await _app.Books.GetAsync(bookA.Id))!.StockQuantity);
+        Assert.Equal(5, (await _app.Books.GetAsync(bookB.Id))!.StockQuantity);
+    }
+
+    [Fact]
+    public async Task Cancel_Twice_DoesNotRestockTwice()
+    {
+        var book = await _app.AddBookAsync(stock: 5);
+        var order = await _app.OrderService.PlaceOrderAsync(new PlaceOrderRequest(
+            "reader@example.com",
+            new List<OrderLineRequest> { new(book.Id, 2) }));
+
+        await _app.OrderService.CancelAsync(order.Id);
+        await _app.OrderService.CancelAsync(order.Id);
+
+        Assert.Equal(5, (await _app.Books.GetAsync(book.Id))!.StockQuantity);
+    }
 }

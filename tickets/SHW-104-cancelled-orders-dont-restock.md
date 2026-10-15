@@ -4,7 +4,7 @@ title: Cancelling an order doesn't put the books back on the shelf
 type: bug
 priority: high
 size: S
-status: todo
+status: in_review
 labels: [orders, inventory]
 depends_on: []
 conflicts_with: [SHW-105, SHW-203, SHW-106]

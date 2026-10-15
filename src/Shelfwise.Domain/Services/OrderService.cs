@@ -83,6 +83,17 @@ public sealed class OrderService
     public async Task<Order> CancelAsync(Guid id)
     {
         var order = await GetAsync(id);
+
+        if (order.Status == OrderStatus.Cancelled)
+        {
+            return order;
+        }
+
+        foreach (var line in order.Lines)
+        {
+            await _inventory.ReleaseAsync(line.BookId, line.Quantity);
+        }
+
         order.Status = OrderStatus.Cancelled;
         await _orders.UpdateAsync(order);
         return order;
