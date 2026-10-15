@@ -4,7 +4,7 @@ title: Discounted line totals are sometimes one cent too low
 type: bug
 priority: medium
 size: XS
-status: in_review
+status: done
 labels: [pricing, finance]
 depends_on: []
 conflicts_with: [SHW-101, SHW-204]
