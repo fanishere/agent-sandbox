@@ -23,6 +23,7 @@ public sealed class PricingService
             gross -= gross * BulkDiscountRate;
         }
 
-        return Math.Round(gross, 2);
+        // Finance rounds half up (away from zero), not banker's rounding.
+        return Math.Round(gross, 2, MidpointRounding.AwayFromZero);
     }
 }
