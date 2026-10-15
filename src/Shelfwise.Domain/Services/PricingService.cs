@@ -23,6 +23,8 @@ public sealed class PricingService
             gross -= gross * BulkDiscountRate;
         }
 
-        return Math.Round(gross, 2);
+        // Round half up (away from zero) at 2 decimals, as finance does by hand.
+        // Math.Round's default is banker's rounding (ToEven), which gives 50.98 for 50.985.
+        return Math.Round(gross, 2, MidpointRounding.AwayFromZero);
     }
 }
