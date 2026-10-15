@@ -36,21 +36,36 @@ public sealed class OrderService
             CreatedAt = DateTime.UtcNow,
         };
 
-        foreach (var lineRequest in request.Lines)
+        var reserved = new List<(Guid BookId, int Quantity)>();
+        try
         {
-            var book = await _books.GetAsync(lineRequest.BookId)
-                ?? throw new NotFoundException($"Book {lineRequest.BookId} was not found.");
-
-            await _inventory.ReserveAsync(book.Id, lineRequest.Quantity);
-
-            order.Lines.Add(new OrderLine
+            foreach (var lineRequest in request.Lines)
             {
-                BookId = book.Id,
-                Title = book.Title,
-                Quantity = lineRequest.Quantity,
-                UnitPrice = book.Price,
-                LineTotal = _pricing.PriceLine(book.Price, lineRequest.Quantity),
-            });
+                var book = await _books.GetAsync(lineRequest.BookId)
+                    ?? throw new NotFoundException($"Book {lineRequest.BookId} was not found.");
+
+                await _inventory.ReserveAsync(book.Id, lineRequest.Quantity);
+                reserved.Add((book.Id, lineRequest.Quantity));
+
+                order.Lines.Add(new OrderLine
+                {
+                    BookId = book.Id,
+                    Title = book.Title,
+                    Quantity = lineRequest.Quantity,
+                    UnitPrice = book.Price,
+                    LineTotal = _pricing.PriceLine(book.Price, lineRequest.Quantity),
+                });
+            }
+        }
+        catch
+        {
+            // Placement is all-or-nothing: give back whatever earlier lines took.
+            foreach (var (bookId, quantity) in reserved)
+            {
+                await _inventory.ReleaseAsync(bookId, quantity);
+            }
+
+            throw;
         }
 
         order.Total = order.Lines.Sum(l => l.LineTotal);

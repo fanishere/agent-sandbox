@@ -4,7 +4,7 @@ title: A rejected multi-book order still removes stock for the books it did rese
 type: bug
 priority: high
 size: S
-status: todo
+status: in_review
 labels: [orders, inventory]
 depends_on: []
 conflicts_with: [SHW-104, SHW-106, SHW-207]

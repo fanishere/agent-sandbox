@@ -57,6 +57,44 @@ public class OrderServiceTests
     }
 
     [Fact]
+    public async Task PlaceOrder_InsufficientStockOnLaterLine_LeavesAllStockUnchangedAndPersistsNothing()
+    {
+        var bookA = await _app.AddBookAsync(stock: 5, title: "A");
+        var bookB = await _app.AddBookAsync(stock: 1, title: "B");
+
+        await Assert.ThrowsAsync<InsufficientStockException>(() =>
+            _app.OrderService.PlaceOrderAsync(new PlaceOrderRequest(
+                "reader@example.com",
+                new List<OrderLineRequest>
+                {
+                    new(bookA.Id, 2),
+                    new(bookB.Id, 3),
+                })));
+
+        Assert.Equal(5, (await _app.Books.GetAsync(bookA.Id))!.StockQuantity);
+        Assert.Equal(1, (await _app.Books.GetAsync(bookB.Id))!.StockQuantity);
+        Assert.Empty(await _app.Orders.ListAsync());
+    }
+
+    [Fact]
+    public async Task PlaceOrder_UnknownBookOnLaterLine_LeavesAllStockUnchangedAndPersistsNothing()
+    {
+        var bookA = await _app.AddBookAsync(stock: 5, title: "A");
+
+        await Assert.ThrowsAsync<NotFoundException>(() =>
+            _app.OrderService.PlaceOrderAsync(new PlaceOrderRequest(
+                "reader@example.com",
+                new List<OrderLineRequest>
+                {
+                    new(bookA.Id, 2),
+                    new(Guid.NewGuid(), 1),
+                })));
+
+        Assert.Equal(5, (await _app.Books.GetAsync(bookA.Id))!.StockQuantity);
+        Assert.Empty(await _app.Orders.ListAsync());
+    }
+
+    [Fact]
     public async Task MarkPaid_SetsStatusToPaid()
     {
         var book = await _app.AddBookAsync();
