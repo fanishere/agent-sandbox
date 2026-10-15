@@ -58,7 +58,8 @@ app.MapGet("/books", async (CatalogService catalog) =>
     Results.Ok(await catalog.ListAsync()));
 
 app.MapGet("/books/{id:guid}", async (Guid id, CatalogService catalog) =>
-    Results.Ok(await catalog.GetAsync(id)));
+    Results.Ok(await catalog.GetAsync(id)
+        ?? throw new NotFoundException($"Book {id} was not found.")));
 
 app.MapPost("/books", async (CreateBookRequest request, CatalogService catalog) =>
 {
