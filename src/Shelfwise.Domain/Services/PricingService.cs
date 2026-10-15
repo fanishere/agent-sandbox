@@ -23,6 +23,6 @@ public sealed class PricingService
             gross -= gross * BulkDiscountRate;
         }
 
-        return Math.Round(gross, 2);
+        return Math.Round(gross, 2, MidpointRounding.AwayFromZero);
     }
 }
