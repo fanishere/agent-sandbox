@@ -4,7 +4,7 @@ title: Popular books are occasionally oversold when many orders arrive at once
 type: bug
 priority: critical
 size: L
-status: todo
+status: in_review
 labels: [concurrency, inventory]
 depends_on: []
 conflicts_with: [SHW-104, SHW-105, SHW-304]
