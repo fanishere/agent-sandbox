@@ -155,6 +155,7 @@ def cmd_set(args, tickets):
 
 def cmd_check(args, tickets):
     problems = []
+    warnings = []
     index = by_id(tickets)
     seen = set()
     for t in tickets:
@@ -172,7 +173,10 @@ def cmd_check(args, tickets):
         for field in ("depends_on", "conflicts_with"):
             for ref in t[field]:
                 if ref not in index:
-                    problems.append(f"{t.id}: {field} references unknown {ref}")
+                    if (TICKET_DIR / "parked").glob(f"{ref}-*.md"):
+                        warnings.append(f"{t.id}: {field} references parked {ref}")
+                    else:
+                        problems.append(f"{t.id}: {field} references unknown {ref}")
         if t.id in t["depends_on"]:
             problems.append(f"{t.id}: depends on itself")
     # cycle detection
@@ -195,6 +199,8 @@ def cmd_check(args, tickets):
     if problems:
         print("\n".join(problems))
         raise SystemExit(1)
+    for w in warnings:
+        print(f"warning: {w}")
     print(f"ok: {len(tickets)} tickets")
 
 
