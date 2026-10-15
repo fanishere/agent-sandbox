@@ -68,6 +68,29 @@ public class ApiTests : IClassFixture<ShelfwiseFactory>
     }
 
     [Fact]
+    public async Task GetBook_UnknownId_Returns404ProblemJson()
+    {
+        var response = await _client.GetAsync($"/books/{Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+        Assert.Equal("Not found", json.GetProperty("title").GetString());
+    }
+
+    [Fact]
+    public async Task GetBook_KnownId_Returns200WithBook()
+    {
+        var id = await CreateBookAsync("Known Book", price: 12.00m, stock: 2);
+
+        var response = await _client.GetAsync($"/books/{id}");
+        var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Equal("Known Book", json.GetProperty("title").GetString());
+    }
+
+    [Fact]
     public async Task GetOrder_Unknown_Returns404()
     {
         var response = await _client.GetAsync($"/orders/{Guid.NewGuid()}");
