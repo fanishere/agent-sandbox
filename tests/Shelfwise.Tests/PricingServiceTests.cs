@@ -19,6 +19,12 @@ public class PricingServiceTests
     }
 
     [Fact]
+    public void PriceLine_ExactlyAtBulkThreshold_AppliesTenPercentDiscount()
+    {
+        Assert.Equal(90.00m, _pricing.PriceLine(10.00m, 10));
+    }
+
+    [Fact]
     public void PriceLine_WellAboveBulkThreshold_AppliesTenPercentDiscount()
     {
         Assert.Equal(99.00m, _pricing.PriceLine(10.00m, 11));

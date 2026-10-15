@@ -18,7 +18,7 @@ public sealed class PricingService
 
         var gross = unitPrice * quantity;
 
-        if (quantity > BulkThreshold)
+        if (quantity >= BulkThreshold)
         {
             gross -= gross * BulkDiscountRate;
         }
