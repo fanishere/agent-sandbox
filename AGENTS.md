@@ -23,6 +23,12 @@ python3 scripts/tickets.py ...    # ticket board (see README)
 - Prefer small, focused changes. Do not reformat or rename unrelated code.
 - No new NuGet packages unless the ticket needs them; say which and why in your summary.
 
+## Branching and review
+- All ticket changes must land via a pull request into `release/next` and be reviewed there.
+  Do not push ticket branches directly to `release/next` or `main`.
+- When work is ready, also open a PR from `release/next` to `main`. Humans review and merge
+  that PR — agents must never merge or push to `main` themselves.
+
 ## Working on a ticket
 1. Read the ticket in `tickets/` fully, including `depends_on` and `conflicts_with`.
 2. Work on a branch named `agent/<ticket-id>-<slug>` (e.g. `agent/SHW-101-bulk-discount`).
